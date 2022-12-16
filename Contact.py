@@ -1,36 +1,45 @@
+from abc import ABC, abstractmethod
+
 class Contact:
-  def __init__(self, name, phone, mail):
-    self.name = name
-    self.phone = phone
-    self.mail = mail
+    def __init__(self, name, phone, email):
+        self.name = name
+        self.phone = phone
+        self.email = email
+    def get_name(self):
+        return self.name
+    def get_phone(self):
+        return self.phone
+    def get_email(self):
+        return self.email
 
-class ContactList:
-  def __init__(self):
-    self.contacts = []
+class ContactMap(ABC):
+    def __init__(self):
+        self.contacts = {}
+    @abstractmethod
+    def save(self, contact_name):
+       pass
+class AddContact(ContactMap):        
+    def save(self, contact):
+        self.contacts[contact.get_name()] = contact
+class DeleteContact(ContactMap):        
+    def save(self, contact_name):
+        if contact_name in self.contacts:
+            del self.contacts[contact_name]
+class FindContact(ContactMap):
+    def save(self, contact_name):
+        if contact_name in self.contacts:
+            print(self.contacts[contact_name])
 
-  def add_contact(self, name, phone, mail):
-    contact = Contact(name, phone, mail)
-    self.contacts.append(contact)
 
-  def delete_contact(self, name):
-    for contact in self.contacts:
-      if contact.name == name:
-        self.contacts.remove(contact)
-        print(f'Contact {name} is Deleted')
+while True:
+    name = input("Enter name (or 'q' to quit): ")
+    if name == 'q':
         break
-    
-  def search_contact(self, name):
-    for contact in self.contacts:
-      if contact.name == name:
-        return contact.name + ": " + contact.phone +" : "+ contact.mail
-    return name + " is not found."
-
-contact_list = ContactList()
-contact_list.add_contact("Ajay", "555-555-5555", "aaa@gmail.com")
-contact_list.add_contact("Rahul", "444-444-4444", "bbb@gmail.com")
-#print(contact_list.search_contact("Ajay"))
-#print(contact_list.search_contact("Rahul"))
-#print(contact_list.search_contact("Alice"))
-contact_list.delete_contact("Rahul")
-print(contact_list.search_contact("Rahul"))
+    phone = input('Enter the phone: ')
+    email = input('Enter Email: ')
+    contact = Contact(name, phone, email)
+    addcontact = AddContact()
+    addcontact.save(contact)
+find_contact = FindContact()
+find_contact.save(contact)
 
